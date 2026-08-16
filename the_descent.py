@@ -62,6 +62,8 @@ if "knows_salt_weakness" not in st.session_state:
     st.session_state.knows_salt_weakness = False
 if "player_name" not in st.session_state:
     st.session_state.player_name = "Player"
+if "endings_found" not in st.session_state:
+    st.session_state.endings_found = set()
 
 def navigate_to(scene_name):
     """Callback helper to switch scenes on button clicks."""
@@ -70,14 +72,39 @@ def navigate_to(scene_name):
 # ---------------------------------------------------------
 # SCENE LOGIC & RENDERING
 # ---------------------------------------------------------
+all_endings = [
+    "death_porch",
+    "death_closet",
+    "death_stairs",
+    "death_freeze",
+    "death_sand",
+    "ending_locket",
+    "ending_salt",
+    "ending_road"
+]
+
 scene = st.session_state.current_scene
 
+if scene in all_endings:
+    st.session_state.endings_found.add(scene)
+
 st.title("🕯️ THE DESCENT")
+with st.sidebar:
+    st.header("Progress")
+    st.write(
+        f"Endings discovered: "
+        f"{len(st.session_state.endings_found)} / {len(all_endings)}"
+    )
 
 # 1. START GAME
 if scene == "start_game":
     st.session_state.has_locket = False
     st.session_state.knows_salt_weakness = False
+
+    st.text_input(
+        "What is your name?",
+        key="player_name"
+    )
 
     st.markdown("""
         <div class="story-card">
@@ -86,8 +113,7 @@ if scene == "start_game":
             <p>The house looks older than I remember. Darker.</p>
         </div>
     """, unsafe_allow_html=True)
-
-    col1, col2, col3 = st.columns(1)[0], None, None
+    
     st.button("1. Knock on the door", on_click=navigate_to, args=("door_click",))
     st.button("2. Try the doorknob", on_click=navigate_to, args=("door_click",))
     st.button("3. Hesitate on the porch", on_click=navigate_to, args=("death_porch",))
@@ -248,6 +274,7 @@ elif scene == "dream_porch":
 # ---------------------------------------------------------
 # ENDINGS & DEATH SCENES
 # ---------------------------------------------------------
+
 elif scene in ["death_porch", "death_closet", "death_stairs", "death_freeze", "death_sand"]:
     death_messages = {
         "death_porch": "Strange shadows pulled me off the steps before I could move.",
