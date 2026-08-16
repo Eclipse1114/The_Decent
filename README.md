@@ -4,7 +4,7 @@ A branching horror text adventure game built with Python and Streamlit.
 
 ## 🎮 Play
 
-[Play The Descent online](https://the-decent.streamlit.app/)
+[Play The Descent online](https://the-descent.streamlit.app/)
 
 ## 📖 About
 
